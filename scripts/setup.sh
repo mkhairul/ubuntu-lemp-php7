@@ -75,7 +75,7 @@ echo -e "----------------------------------------"
 echo "VAGRANT ==> MySQL"
 sudo apt-get install -y mysql-server
 #sudo sed '/\[mysqld\]/askip-grant-tables' -i /etc/mysql/mysql.conf.d/mysqld.cnf
-sudo mysql -u root -e "CREATE DATABASE 'magento'; CREATE USER 'magento'@'localhost' IDENTIFIED BY 'magento'; GRANT ALL PRIVILEGES ON magento.* TO 'magento'@'localhost'; FLUSH PRIVILEGES"
+sudo mysql -u root -e "CREATE DATABASE magento; CREATE USER 'magento'@'localhost' IDENTIFIED BY 'magento'; GRANT ALL PRIVILEGES ON magento.* TO 'magento'@'localhost'; FLUSH PRIVILEGES;"
 
 
 #
@@ -83,9 +83,10 @@ sudo mysql -u root -e "CREATE DATABASE 'magento'; CREATE USER 'magento'@'localho
 #
 echo -e "----------------------------------------"
 echo "VAGRANT ==> Magento"
-sudo bash -c 'cat << EOF > /etc/nginx/sites-available/magento
+sudo rm /etc/nginx/sites-enabled/default
+sudo bash -c 'cat << \EOF > /etc/nginx/sites-available/magento
 upstream fastcgi_backend {
-  server  unix:/run/php/php7.3-fpm.sock;
+  server 127.0.0.1:9000;
 }
 
 server {
@@ -96,16 +97,17 @@ server {
   include /home/vagrant/magento/nginx.conf.sample;
 }
 EOF'
+sudo ln -s /etc/nginx/sites-available/magento /etc/nginx/sites-enabled/magento
 git clone https://github.com/magento/magento2.git /home/vagrant/magento
 cd /home/vagrant/magento
 git checkout 2.3.4
-find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
-find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
-chown -R :www-data .
-chmod u+x bin/magento
+sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
+sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
+sudo chown -R :www-data .
+sudo chmod u+x bin/magento
 composer install
 bin/magento setup:install \
---base-url=http://localhost \
+--base-url=http://localhost:8000 \
 --db-host=localhost \
 --db-name=magento \
 --db-user=magento \
@@ -120,6 +122,7 @@ bin/magento setup:install \
 --currency=MYR \
 --timezone=Asia/Kuala_Lumpur \
 --use-rewrites=1
+
 
 #
 # Reload servers

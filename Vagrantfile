@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
     end
     
     # set project folder here:
-    config.vm.synced_folder "C:/work", "/var/www"
+    config.vm.synced_folder "E:/work", "/var/www"
 
     config.vm.provision "shell", path: "./scripts/setup.sh", privileged: false
 end
