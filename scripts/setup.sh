@@ -123,6 +123,13 @@ bin/magento setup:install \
 --timezone=Asia/Kuala_Lumpur \
 --use-rewrites=1
 
+git clone https://github.com/magento/magento2-sample-data.git /home/vagrant/magento-sample-data
+cd /home/vagrant/magento-sample-data
+git checkout 2.3.4
+sudo php -f /home/vagrant/magento-sample-data/dev/tools/build-sample-data.php -- --ce-source="/home/vagrant/magento"
+cd /home/vagrant/magento
+sudo bin/magento setup:upgrade
+
 
 #
 # Reload servers
