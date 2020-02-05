@@ -130,6 +130,9 @@ sudo php -f /home/vagrant/magento-sample-data/dev/tools/build-sample-data.php --
 cd /home/vagrant/magento
 sudo bin/magento setup:upgrade
 
+wget https://files.magerun.net/n98-magerun2.phar
+chmod +x ./n98-magerun.phar
+
 
 #
 # Reload servers
