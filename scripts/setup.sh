@@ -3,6 +3,12 @@
 
 sudo echo "127.0.1.1 ubuntu-disco-dingo" >> /etc/hosts
 
+
+USER=$1
+PASS=$2
+
+echo "============    BITBUCKET USER: $USER"
+
 #
 # Install
 #
@@ -98,7 +104,7 @@ server {
 }
 EOF'
 sudo ln -s /etc/nginx/sites-available/magento /etc/nginx/sites-enabled/magento
-git clone https://github.com/magento/magento2.git /home/vagrant/magento
+git clone --progress --verbose https://github.com/magento/magento2.git /home/vagrant/magento
 cd /home/vagrant/magento
 git checkout 2.3.4
 sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
@@ -125,13 +131,27 @@ bin/magento setup:install \
 
 git clone https://github.com/magento/magento2-sample-data.git /home/vagrant/magento-sample-data
 cd /home/vagrant/magento-sample-data
-git checkout 2.3.4
+#git checkout 2.3.4
 sudo php -f /home/vagrant/magento-sample-data/dev/tools/build-sample-data.php -- --ce-source="/home/vagrant/magento"
 cd /home/vagrant/magento
 sudo bin/magento setup:upgrade
 
 wget https://files.magerun.net/n98-magerun2.phar
 chmod +x ./n98-magerun2.phar
+sudo bash -c 'cat << EOF > /etc/sysctl.conf
+fs.inotify.max_user_watches=524288
+EOF'
+sudo sysctl -p
+
+
+echo "============    BEGIN INTEGRATING WITH BITBUCKET   ============="
+echo -e "----------------------------------------"
+cd /home/vagrant/magento
+git clone https://${USER}:${PASS}@bitbucket.org/mediaprimadigital/superdeals-magento.git ~/temp
+rm -rf .git
+mv ~/temp/.git .git
+rm -rf ~/temp
+git reset --hard HEAD
 
 
 # Change Magento Theme

@@ -45,3 +45,8 @@ Host superdeals
 - Changing base url (if wants to use it with ngrok)
 -- `bin/magento setup:store-config:set --base-url="http://localhost:8000"`
 -- `bin/magento setup:store-config:set --base-url-secure="https://localhost:8000"`
+- Refresh Changes on template
+-- ```sudo php bin/magento setup:static-content:deploy -f```
+-- ```php bin/magento cache:flush```
+- Bringing up vagrant
+-- ```vagrant --user=<username> --pass=<password> up```
