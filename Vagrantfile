@@ -1,6 +1,25 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'getoptlong'
+
+opts = GetoptLong.new(
+  [ '--user', GetoptLong::REQUIRED_ARGUMENT  ],
+  [ '--pass', GetoptLong::REQUIRED_ARGUMENT  ]
+)
+
+bitbucket_username = ""
+bitbucket_pass = ""
+
+opts.each do |opt, arg|
+  case opt
+    when '--user'
+      bitbucket_username = arg
+	when '--pass'
+      bitbucket_pass = arg
+  end
+end
+
 Vagrant.configure(2) do |config|
 
 	config.vm.box = "bento/ubuntu-18.04"
@@ -28,5 +47,5 @@ Vagrant.configure(2) do |config|
     # set project folder here:
     config.vm.synced_folder "C:/work", "/var/www"
 
-    config.vm.provision "shell", path: "./scripts/setup.sh", privileged: false
+    config.vm.provision "shell", path: "./scripts/setup.sh", privileged: false, args: [bitbucket_username, bitbucket_pass]
 end

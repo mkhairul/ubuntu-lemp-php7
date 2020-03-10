@@ -3,6 +3,12 @@
 
 sudo echo "127.0.1.1 ubuntu-disco-dingo" >> /etc/hosts
 
+
+USER=$1
+PASS=$2
+
+echo "============    BITBUCKET USER: $USER"
+
 #
 # Install
 #
@@ -129,6 +135,21 @@ git checkout 2.3.4
 sudo php -f /home/vagrant/magento-sample-data/dev/tools/build-sample-data.php -- --ce-source="/home/vagrant/magento"
 cd /home/vagrant/magento
 sudo bin/magento setup:upgrade
+
+sudo bash -c 'cat << EOF > /etc/sysctl.conf
+fs.inotify.max_user_watches=524288
+EOF'
+sudo sysctl -p
+
+
+echo "============    BEGIN INTEGRATING WITH BITBUCKET   ============="
+echo -e "----------------------------------------"
+cd /home/vagrant/magento
+git clone https://${USER}:${PASS}@bitbucket.org/mediaprimadigital/superdeals-magento.git ~/temp
+rm -rf .git
+mv ~/temp/.git .git
+rm -rf ~/temp
+git reset --hard HEAD
 
 
 #
