@@ -45,7 +45,7 @@ Vagrant.configure(2) do |config|
     end
     
     # set project folder here:
-    config.vm.synced_folder "C:/work", "/var/www"
+    config.vm.synced_folder "../work", "/var/www"
 
     config.vm.provision "shell", path: "./scripts/setup.sh", privileged: false, args: [bitbucket_username, bitbucket_pass]
 end
