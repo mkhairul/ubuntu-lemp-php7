@@ -1,24 +1,17 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-require 'getoptlong'
+#require 'io/console'
 
-opts = GetoptLong.new(
-  [ '--user', GetoptLong::REQUIRED_ARGUMENT  ],
-  [ '--pass', GetoptLong::REQUIRED_ARGUMENT  ]
-)
-
-bitbucket_username = ""
-bitbucket_pass = ""
-
-opts.each do |opt, arg|
-  case opt
-    when '--user'
-      bitbucket_username = arg
-	when '--pass'
-      bitbucket_pass = arg
-  end
+if ARGV[0] == 'up' || ARGV[0] == 'provision'
+	print "Enter Bitbucket Username: "
+	bitbucket_username = STDIN.gets.chomp
+	print "Password: "
+	bitbucket_pass = STDIN.noecho(&:gets).chomp
 end
+
+#puts "Username: #{bitbucket_username}, Pass: #{bitbucket_pass}"
+#exit
 
 Vagrant.configure(2) do |config|
 
@@ -48,4 +41,5 @@ Vagrant.configure(2) do |config|
     config.vm.synced_folder "../work", "/var/www"
 
     config.vm.provision "shell", path: "./scripts/setup.sh", privileged: false, args: [bitbucket_username, bitbucket_pass]
+	config.vm.provision "integrate", type: "shell", run: "never", path: "./scripts/integrate.sh", privileged: false, args: [bitbucket_username, bitbucket_pass]
 end

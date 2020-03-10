@@ -48,3 +48,5 @@ Host superdeals
 - Refresh Changes on template
 -- ```sudo php bin/magento setup:static-content:deploy -f```
 -- ```php bin/magento cache:flush```
+- Bringing up vagrant
+-- ```vagrant --user=<username> --pass=<password> up```

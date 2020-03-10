@@ -104,7 +104,7 @@ server {
 }
 EOF'
 sudo ln -s /etc/nginx/sites-available/magento /etc/nginx/sites-enabled/magento
-git clone https://github.com/magento/magento2.git /home/vagrant/magento
+git clone --progress --verbose https://github.com/magento/magento2.git /home/vagrant/magento
 cd /home/vagrant/magento
 git checkout 2.3.4
 sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
@@ -131,7 +131,7 @@ bin/magento setup:install \
 
 git clone https://github.com/magento/magento2-sample-data.git /home/vagrant/magento-sample-data
 cd /home/vagrant/magento-sample-data
-git checkout 2.3.4
+#git checkout 2.3.4
 sudo php -f /home/vagrant/magento-sample-data/dev/tools/build-sample-data.php -- --ce-source="/home/vagrant/magento"
 cd /home/vagrant/magento
 sudo bin/magento setup:upgrade
