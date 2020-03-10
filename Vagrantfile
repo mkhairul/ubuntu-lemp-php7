@@ -1,7 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-#require 'io/console'
+bitbucket_username = ''
+bitbucket_pass = ''
 
 if ARGV[0] == 'up' || ARGV[0] == 'provision'
 	print "Enter Bitbucket Username: "
@@ -40,6 +41,6 @@ Vagrant.configure(2) do |config|
     # set project folder here:
     config.vm.synced_folder "../work", "/var/www"
 
-    config.vm.provision "shell", path: "./scripts/setup.sh", privileged: false, args: [bitbucket_username, bitbucket_pass]
+	config.vm.provision "shell", path: "./scripts/setup.sh", privileged: false, args: [bitbucket_username, bitbucket_pass]
 	config.vm.provision "integrate", type: "shell", run: "never", path: "./scripts/integrate.sh", privileged: false, args: [bitbucket_username, bitbucket_pass]
 end
