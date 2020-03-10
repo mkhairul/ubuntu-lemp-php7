@@ -131,8 +131,14 @@ cd /home/vagrant/magento
 sudo bin/magento setup:upgrade
 
 wget https://files.magerun.net/n98-magerun2.phar
-chmod +x ./n98-magerun.phar
+chmod +x ./n98-magerun2.phar
 
+
+# Change Magento Theme
+#THEME_ID="$(n98-magerun2.phar dev:theme:list --format=csv \
+#  | grep 'Magento/superdeals' | cut -d, -f1)" \
+#  ; test -n "${THEME_ID}" \
+#  && n98-magerun2.phar config:set design/theme/theme_id "${THEME_ID}"
 
 #
 # Reload servers
