@@ -1,4 +1,4 @@
-# Ubuntu 19.04 Vagrant VM: PHP 7.3
+# Ubuntu 19.10 Vagrant VM: PHP 7.3
 * Git
 * Nginx
 * PHP V7.3
@@ -37,16 +37,10 @@ Host superdeals
 ```
 
 - increase maximum watched files (https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc)
--- ```sudo vim /etc/sysctl.conf```
--- add at EOF, ```fs.inotify.max_user_watches=524288```
--- ```sudo sysctl -p```
+  - ```sudo vim /etc/sysctl.conf```
+  - add at EOF, ```fs.inotify.max_user_watches=524288```
+  - ```sudo sysctl -p```
 
 # Notes & Common Commands
-- Changing base url (if wants to use it with ngrok)
--- `bin/magento setup:store-config:set --base-url="http://localhost:8000"`
--- `bin/magento setup:store-config:set --base-url-secure="https://localhost:8000"`
-- Refresh Changes on template
--- ```sudo php bin/magento setup:static-content:deploy -f```
--- ```php bin/magento cache:flush```
 - Bringing up vagrant
--- ```vagrant --user=<username> --pass=<password> up```
+  - ```vagrant up```

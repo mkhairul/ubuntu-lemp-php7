@@ -3,12 +3,6 @@
 
 sudo echo "127.0.1.1 ubuntu-disco-dingo" >> /etc/hosts
 
-
-USER=$1
-PASS=$2
-
-echo "============    BITBUCKET USER: $USER"
-
 #
 # Install
 #
@@ -81,84 +75,7 @@ echo -e "----------------------------------------"
 echo "VAGRANT ==> MySQL"
 sudo apt-get install -y mysql-server
 #sudo sed '/\[mysqld\]/askip-grant-tables' -i /etc/mysql/mysql.conf.d/mysqld.cnf
-sudo mysql -u root -e "CREATE DATABASE magento; CREATE USER 'magento'@'localhost' IDENTIFIED BY 'magento'; GRANT ALL PRIVILEGES ON magento.* TO 'magento'@'localhost'; FLUSH PRIVILEGES;"
-
-
-#
-# Magento
-#
-echo -e "----------------------------------------"
-echo "VAGRANT ==> Magento"
-sudo rm /etc/nginx/sites-enabled/default
-sudo bash -c 'cat << \EOF > /etc/nginx/sites-available/magento
-upstream fastcgi_backend {
-  server 127.0.0.1:9000;
-}
-
-server {
-
-  listen 80;
-  server_name _;
-  set $MAGE_ROOT /home/vagrant/magento;
-  include /home/vagrant/magento/nginx.conf.sample;
-}
-EOF'
-sudo ln -s /etc/nginx/sites-available/magento /etc/nginx/sites-enabled/magento
-git clone --progress --verbose https://github.com/magento/magento2.git /home/vagrant/magento
-cd /home/vagrant/magento
-git checkout 2.3.4
-sudo find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
-sudo find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
-sudo chown -R :www-data .
-sudo chmod u+x bin/magento
-composer install
-bin/magento setup:install \
---base-url=http://localhost:8000 \
---db-host=localhost \
---db-name=magento \
---db-user=magento \
---db-password=magento \
---backend-frontname=admin \
---admin-firstname=admin \
---admin-lastname=admin \
---admin-email=admin@admin.com \
---admin-user=admin \
---admin-password=admin123 \
---language=en_US \
---currency=MYR \
---timezone=Asia/Kuala_Lumpur \
---use-rewrites=1
-
-git clone https://github.com/magento/magento2-sample-data.git /home/vagrant/magento-sample-data
-cd /home/vagrant/magento-sample-data
-#git checkout 2.3.4
-sudo php -f /home/vagrant/magento-sample-data/dev/tools/build-sample-data.php -- --ce-source="/home/vagrant/magento"
-cd /home/vagrant/magento
-sudo bin/magento setup:upgrade
-
-wget https://files.magerun.net/n98-magerun2.phar
-chmod +x ./n98-magerun2.phar
-sudo bash -c 'cat << EOF > /etc/sysctl.conf
-fs.inotify.max_user_watches=524288
-EOF'
-sudo sysctl -p
-
-
-echo "============    BEGIN INTEGRATING WITH BITBUCKET   ============="
-echo -e "----------------------------------------"
-cd /home/vagrant/magento
-git clone https://${USER}:${PASS}@bitbucket.org/mediaprimadigital/superdeals-magento.git ~/temp
-rm -rf .git
-mv ~/temp/.git .git
-rm -rf ~/temp
-git reset --hard HEAD
-
-
-# Change Magento Theme
-#THEME_ID="$(n98-magerun2.phar dev:theme:list --format=csv \
-#  | grep 'Magento/superdeals' | cut -d, -f1)" \
-#  ; test -n "${THEME_ID}" \
-#  && n98-magerun2.phar config:set design/theme/theme_id "${THEME_ID}"
+#sudo mysql -u root -e "CREATE DATABASE magento; CREATE USER 'magento'@'localhost' IDENTIFIED BY 'magento'; GRANT ALL PRIVILEGES ON magento.* TO 'magento'@'localhost'; FLUSH PRIVILEGES;"
 
 #
 # Reload servers
